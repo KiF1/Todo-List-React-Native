@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View, FlatList, Alert } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, FlatList, Alert, Image } from 'react-native';
 import { Task } from '../../components/Task';
+import uuid from 'react-native-uuid';
 import { styles } from './styles';
 
 export interface Itask{
@@ -12,10 +13,12 @@ export interface Itask{
 export function Home() {
   const [tasks, setTasks] = useState<Itask[]>([]);
   const [content, setContent] = useState<string>('');
+  const iscompleted = tasks.filter((tasks)=> tasks.isCompleted).length;
+  const taskQuantity = tasks.length;
 
   function handleAddTask(content: string) {
     setTasks([...tasks, {
-      id: crypto.randomUUID(),
+      id: String(uuid.v4()),
       content: content,
       isCompleted: false
     }]);
@@ -42,24 +45,40 @@ export function Home() {
     setTasks(newTasks);
   }
 
-
   return (
     <View style={styles.container}>
-      <Text style={styles.eventName}>Nome do Evento</Text>
-      <Text style={styles.eventDate}>Sexta, 4 de novembro de 2022</Text>
-      <View style={styles.form}>
-        <TextInput placeholder='Nome do Participante' placeholderTextColor='#6B6B6B' value={content} onChangeText={setContent} />
-        <TouchableOpacity style={styles.button} onPress={() => handleAddTask(content)}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>  
+      <View style={styles.header}>
+        <Image source={require("../../../assets/Logo.png")} resizeMode="contain" />
+        <View style={styles.form}>
+         <TextInput placeholder='Adicione uma tarefa' placeholderTextColor='#808080' style={styles.input} value={content} onChangeText={setContent} />
+         <TouchableOpacity style={styles.button} onPress={() => handleAddTask(content)}>
+            <Image source={require("../../../assets/add.png")} resizeMode="cover" />
+         </TouchableOpacity>  
+       </View>
       </View>
-      <FlatList data={tasks} keyExtractor={item => item} renderItem={({ item }) => (
-        <Task key={item.id} onComplete={() => isCompleteTask(item.id)} content={item.content} onRemove={() => handleRemoveParticipant(item.id)} />
-      )}
-      showsVerticalScrollIndicator={false} ListEmptyComponent={() => (
-        <Text style={styles.listEmptyText}>A lista está vazia</Text>
-      )}
-       />
+      <View style={styles.content}>
+        <View style={styles.informations}>
+          <View style={styles.box}>
+            <Text style={styles.blue}>Criadas</Text>
+            <Text style={styles.number}>{taskQuantity}</Text>
+          </View>
+          <View style={styles.box}>
+            <Text style={styles.purple}>Concluidas</Text>
+            <Text style={styles.number}>{iscompleted}</Text>
+          </View>
+        </View>
+        {taskQuantity >= 1 ? (
+          <FlatList data={tasks} keyExtractor={item => item.id} renderItem={({ item }) => (
+            <Task key={item.id} onComplete={() => isCompleteTask(item.id)} task={item} onRemove={() => handleRemoveParticipant(item.id)} />
+          )} showsVerticalScrollIndicator={false} />
+        ) : (
+          <View style={styles.notask}>
+            <Image style={styles.imagenotask} resizeMode="cover" source={require('../../../assets/Clipboard.png')} />
+            <Text style={styles.text}>Você ainda não tem tarefas cadastradas</Text>
+            <Text style={styles.text}>Crie tarefas e organize seus itens a fazer</Text>
+          </View>
+        ) }
+      </View>
     </View>
-  );
+  )
 }

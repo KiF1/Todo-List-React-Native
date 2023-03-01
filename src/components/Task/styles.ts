@@ -2,28 +2,31 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    backgroundColor: '#1F1E25',
+    flex: 1,
+    height: 65,
+    padding: 10,
+    backgroundColor: '#333333',
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    gap: 8,
   },
-  name: {
+  content: {
     flex: 1,
     fontSize: 16,
     color: '#FFF',
-    marginLeft: 16
   },
-  buttonText: {
+  completed: {
+    flex: 1,
+    fontSize: 16,
     color: '#FFF',
-    fontSize: 24
+    textDecorationLine: 'line-through',
   },
   button: {
-    width: 56,
-    height: 56,
+    width: 25,
+    height: 25,
     borderRadius: 5,
-    backgroundColor: '#E23C44',
     alignItems: 'center',
     justifyContent: 'center'
   },
